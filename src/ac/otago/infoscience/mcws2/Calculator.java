@@ -66,7 +66,7 @@ public class Calculator {
 
 		// now do some magic to calculate absolute risk
 		float h1 = baseline * Util.ADJ_FEMALE / 100000;
-		logger.debug("baseline * (1-" + Util.ADJ_FEMALE +") is h1 = " + h1);
+		logger.debug("baseline * (" + Util.ADJ_FEMALE +") is h1 = " + h1);
 		
 		float numerator = h1 * rr;
 		logger.debug("h1 * rr = " + numerator);
@@ -146,7 +146,7 @@ public class Calculator {
 
 		// now do some magic to calculate absolute risk
 		float h1 = baseline * Util.ADJ_FEMALE / 100000;
-		logger.debug("baseline * (1-" + Util.ADJ_FEMALE +") is h1 = " + h1);
+		logger.debug("baseline * " + Util.ADJ_FEMALE +") is h1 = " + h1);
 		
 		float numerator = h1 * rr;
 		logger.debug("h1 * rr = " + numerator);
@@ -268,7 +268,7 @@ public class Calculator {
 
 		// calculate absolute risk.
 		float h1 = baseline * Util.ADJ_MALE / 100000;
-		logger.debug("baseline * (1-0.8510) is h1 = " + h1);
+		logger.debug("baseline * " +  Util.ADJ_MALE /100000  + " is h1 = " + h1);
 		
 		float numerator = h1 * rr;
 		logger.debug("h1 * rr = " + numerator);
@@ -399,7 +399,7 @@ public class Calculator {
 		
 		// now do some magic to calculate absolute risk
 		h1 = baseline * Util.ADJ_MALE / 100000;
-		logger.debug("baseline * (1-" + Util.ADJ_MALE +") is h1 = " + h1);
+		logger.debug("baseline * " + Util.ADJ_MALE +") is h1 = " + h1);
 		
 		numerator = h1 * rr;
 		logger.debug("h1 * rr = " + numerator);
@@ -421,6 +421,11 @@ public class Calculator {
 		// the bit for the years remaining within the next age group
 		double result3 = f1 * f2;
 		
+		logger.debug("calculating result2:");
+		logger.debug("yearsInThisAgeGroup: "+yearsInThisAgeGroup);
+		logger.debug("saveDenominator: "+saveDenominator);
+		logger.debug("yearsInThisAgeGroup * saveDenominator: "+yearsInThisAgeGroup * saveDenominator);
+		logger.debug("exp{-yearsInThisAgeGroup * saveDenominator}: "+ Math.exp(-yearsInThisAgeGroup * saveDenominator));		
 		double result2 = Math.exp(-yearsInThisAgeGroup * saveDenominator);
 
 		logger.debug("result1 is: " + result1);

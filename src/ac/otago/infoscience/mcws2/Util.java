@@ -708,9 +708,9 @@ public class Util {
 	public static String HIGH_RISK = "HIGH_RISK";
 	public static String VERY_HIGH_RISK = "VERY_HIGH_RISK";
 
-	static float LOW_RISK_UPP = 0.0027f;
-	static float MODERATE_RISK_UPP = 0.0100f;
-	static float HIGH_RISK_UPP = 0.0170f;
+	static float LOW_RISK_UPP = 0.0015f;
+	static float MODERATE_RISK_UPP = 0.0033f;
+	static float HIGH_RISK_UPP = 0.0066f;
 
 	/**
 	 * work out risk category, based on risk;
@@ -745,12 +745,13 @@ public class Util {
 
 	}
 
-	public static String LOW_RISK_TEXT = "this person is in the lowest 30% of absolute risk of melanoma development in the NZ population. They are predicted to have a low risk of developing melanoma in the next 5 years.";
-	public static String MODERATE_RISK_TEXT = "The predicted absolute risk for this person lies between the lowest 30% and the highest 30% of melanoma risk in the NZ population. They are predicted to have a moderate risk of developing melanoma in the next 5 years.";
-	public static String HIGH_RISK_TEXT = "This person is in the highest 30% of absolute risk of melanoma development in the NZ population. They are predicted to have a high risk of developing melanoma in the next 5 years.";
-	public static String VERY_HIGH_RISK_TEXT = "This person is in the highest 15% of absolute risk of melanoma development in the NZ population. They are predicted to have a very high risk of developing melanoma in the next 5 years.";
+	public static String LOW_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years.";
+	
+	public static String MODERATE_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years.";
+	public static String HIGH_RISK_TEXT = "This person is expected to have a high risk of developing melanoma in the next 5 years.";
+	public static String VERY_HIGH_RISK_TEXT = "This person is expected to have a very high risk of developing melanoma in the next 5 years.";
 
-	public static String getRiskDescription(String riskCategory) {
+	public static String getRiskDescription(String riskCategory, float risk) {
 		logger.debug("risk category is: " + riskCategory);
 		String result = "ERROR";
 		if (riskCategory == null) {
@@ -774,7 +775,25 @@ public class Util {
 				}
 			}
 		}
-
+		// no division by 0
+		float riskPerc = Math.max(risk * 100, 0.000001f);
+		
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		String riskPercStr = df.format(riskPerc);
+		
+		
+		float numIn100 = 100/riskPerc;
+		DecimalFormat df2 = new DecimalFormat();
+		df2.setMaximumFractionDigits(0);
+		df2.setMinimumFractionDigits(0);
+		String numIn100Str = df2.format(numIn100);
+		
+		
+        result = result + "The risk is " + riskPercStr + "% in 5 years. \n ";
+		result = result + "1 in " + numIn100Str + " people of the same age and with the same characteristics as this person " + 
+				"would be expected to develop melanoma in the next 5 years.";
 		return result;
 	}
 
@@ -790,7 +809,7 @@ public class Util {
 		String result = df.format(risk);
 
 		String riskCategory = calculateRiskCategory(risk);
-		String riskDescription = getRiskDescription(riskCategory);
+		String riskDescription = getRiskDescription(riskCategory, risk);
 
 		String xml = "<?xml version=\"1.0\"?>" + "<MR><RISK>" + result + "</RISK>" + toElement(riskCategory)
 				+ "<DESCRIPTION>" + riskDescription + "</DESCRIPTION>" + "</MR>";
