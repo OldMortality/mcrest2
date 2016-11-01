@@ -2,6 +2,8 @@ package ac.otago.infoscience.mcws2;
 
 import java.text.DecimalFormat;
 
+import javax.tools.ToolProvider;
+
 import org.apache.log4j.Logger;
 
 public class Util {
@@ -708,7 +710,8 @@ public class Util {
 	public static String HIGH_RISK = "HIGH_RISK";
 	public static String VERY_HIGH_RISK = "VERY_HIGH_RISK";
 
-	static float LOW_RISK_UPP = 0.0015f;
+	// added .0000001 because I have a testcase exactly at the boundary.
+	static float LOW_RISK_UPP = 0.0015001f;
 	static float MODERATE_RISK_UPP = 0.0033f;
 	static float HIGH_RISK_UPP = 0.0066f;
 
@@ -747,12 +750,13 @@ public class Util {
 
 	public static String LOW_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years.";
 	
-	public static String MODERATE_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years.";
+	public static String MODERATE_RISK_TEXT = "This person is expected to have a moderate risk of developing melanoma in the next 5 years.";
 	public static String HIGH_RISK_TEXT = "This person is expected to have a high risk of developing melanoma in the next 5 years.";
 	public static String VERY_HIGH_RISK_TEXT = "This person is expected to have a very high risk of developing melanoma in the next 5 years.";
 
 	public static String getRiskDescription(String riskCategory, float risk) {
 		logger.debug("risk category is: " + riskCategory);
+		logger.debug("risk is: " + risk);
 		String result = "ERROR";
 		if (riskCategory == null) {
 			return result;
@@ -792,10 +796,68 @@ public class Util {
 		
 		
         result = result + "The risk is " + riskPercStr + "% in 5 years. \n ";
-		result = result + "1 in " + numIn100Str + " people of the same age and with the same characteristics as this person " + 
+		result = result + "1 in " + numIn100Str + " people of the same age and gender, and with the same characteristics as this person " + 
 				"would be expected to develop melanoma in the next 5 years.";
 		return result;
 	}
+	
+	public static String toPerc(float risk) {
+		float riskPerc = Math.max(risk * 100, 0.000001f);
+		
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		String riskPercStr = df.format(riskPerc);
+		return riskPercStr;
+	}
+	
+	/*
+	 * used for testing only. NumIn100 is passed in as a parameter, so we can compare
+	 * it to the actual value produced by the web service.
+	 * 
+	 */
+	public static String getRiskDescriptionTest(String riskCategory, float risk, String numIn100Str) {
+		logger.debug("risk category is: " + riskCategory);
+		logger.debug("risk is: " + risk);
+		String result = "ERROR";
+		if (riskCategory == null) {
+			return result;
+		}
+
+		if (riskCategory.equals(LOW_RISK)) {
+			result = LOW_RISK_TEXT;
+		} else {
+			if (riskCategory.equals(MODERATE_RISK)) {
+				result = MODERATE_RISK_TEXT;
+			} else {
+				if (riskCategory.equals(HIGH_RISK)) {
+					result = HIGH_RISK_TEXT;
+				} else {
+					if (riskCategory.equals(VERY_HIGH_RISK)) {
+						result = VERY_HIGH_RISK_TEXT;
+					} else {
+						logger.error("unexpected riskCategory " + riskCategory);
+					}
+				}
+			}
+		}
+		// no division by 0
+		//float riskPerc = Math.max(risk * 100, 0.000001f);
+		
+		//DecimalFormat df = new DecimalFormat();
+		//df.setMaximumFractionDigits(2);
+		///df.setMinimumFractionDigits(2);
+		//String riskPercStr = df.format(riskPerc);
+		
+		String riskPercStr = toPerc(risk);
+
+		result = result + "The risk is " + riskPercStr + "% in 5 years. \n ";
+		result = result + "1 in " + numIn100Str + " people of the same age and gender, and with the same characteristics as this person " + 
+				"would be expected to develop melanoma in the next 5 years.";
+		return result;
+	}
+	
+	
 
 	public static String toElement(String riskCategory) {
 		return ("<RISK_CATEGORY>" + riskCategory + "</RISK_CATEGORY>");
@@ -824,9 +886,19 @@ public class Util {
 	 */
 	public static void main(String[] args) {
 
+		/*
 		for (int i = 1; i < 90; i++) {
 			System.out.println(i + "   " + toAgeGroup(i));
 		}
+		*/
+		
+		String desc = getRiskDescription(Util.MODERATE_RISK, 0.001f);
+		System.out.println(desc);
+		
+		String desc2 = riskToXML(0.0165f);
+		System.out.println(desc2);
+		
+		
 
 	}
 }
