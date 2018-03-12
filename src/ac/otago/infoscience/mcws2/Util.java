@@ -710,10 +710,10 @@ public class Util {
 	public static String HIGH_RISK = "HIGH_RISK";
 	public static String VERY_HIGH_RISK = "VERY_HIGH_RISK";
 
-	// added .0000001 because I have a testcase exactly at the boundary.
-	static float LOW_RISK_UPP = 0.0015001f;
-	static float MODERATE_RISK_UPP = 0.0033f;
-	static float HIGH_RISK_UPP = 0.0066f;
+	// obsolete: added .000001 because I have a testcase exactly at the boundary.
+	static float LOW_RISK_UPP = 0.003501f;
+	static float MODERATE_RISK_UPP = 0.0083f;
+	static float HIGH_RISK_UPP = 0.018f;
 
 	/**
 	 * work out risk category, based on risk;
@@ -748,8 +748,8 @@ public class Util {
 
 	}
 
-	public static String LOW_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years.";
-	
+	 
+	public static String LOW_RISK_TEXT = "This person is expected to have a low risk of developing melanoma in the next 5 years." ; 
 	public static String MODERATE_RISK_TEXT = "This person is expected to have a moderate risk of developing melanoma in the next 5 years.";
 	public static String HIGH_RISK_TEXT = "This person is expected to have a high risk of developing melanoma in the next 5 years.";
 	public static String VERY_HIGH_RISK_TEXT = "This person is expected to have a very high risk of developing melanoma in the next 5 years.";
